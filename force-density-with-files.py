@@ -7,24 +7,39 @@ compute_x = input("Do you want to compute the x coordinates? (y/n): ").strip().l
 compute_y = input("Do you want to compute the y coordinates? (y/n): ").strip().lower() == 'y'
 compute_z = input("Do you want to compute the z coordinates? (y/n): ").strip().lower() == 'y'
 
-C_file = 'C.csv'
+
+import glob
+def choose(pattern):
+    files = sorted(glob.glob(pattern))
+    for i,f in enumerate(files): print(i, f)
+    return files[int(input(f'{pattern} - choose index: '))]
+C_file = choose('C*.csv'); Cf_file = choose('Cf*.csv'); Q_file = choose('Q*.csv')
+
+if compute_x:
+    xf_file = choose('xf*.csv')
+    fx_file = choose('fx*.csv')
+if compute_y:
+    yf_file = choose('yf*.csv')
+    fy_file = choose('fy*.csv')
+if compute_z:
+    zf_file = choose('zf*.csv')
+    fz_file = choose('fz*.csv')
+
 
 try:
-    C = np.loadtxt('C.csv', delimiter=',')
+    C = np.loadtxt(C_file, delimiter=',')
 except OSError:
     raise FileNotFoundError(f"There is no default value for this, please upload '{C_file}'")
 print(C)
 
-Cf_file = 'Cf.csv'
 
 try:
-    Cf = np.loadtxt('Cf.csv', delimiter=',')
+    Cf = np.loadtxt(Cf_file, delimiter=',')
 except OSError:
     raise FileNotFoundError(f"There is no default value for this, please upload '{Cf_file}'")
 print(Cf)
 
 
-Q_file = 'Q.csv'
 
 try:
     Q = np.diag(np.loadtxt(Q_file, delimiter=','))
@@ -45,11 +60,11 @@ def load_coordinate(filename):
 
 xf, yf, zf = np.zeros(Cf.shape[1]), np.zeros(Cf.shape[1]), np.zeros(Cf.shape[1])
 if compute_x:
-    xf = load_coordinate('xf.csv')
+    xf = load_coordinate(xf_file)
 if compute_y:
-    yf = load_coordinate('yf.csv')
+    yf = load_coordinate(yf_file)
 if compute_z:
-    zf = load_coordinate('zf.csv')
+    zf = load_coordinate(zf_file)
 
 coord_f = np.column_stack((xf, yf, zf))
 print(coord_f)
